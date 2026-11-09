@@ -1,13 +1,15 @@
 Name:           MultiMC5
-Version:        1.4
-Release:        3%{?dist}
+Version:        1.7
+Release:        1%{?dist}
 Summary:        A local install wrapper for MultiMC
 
 License:        ASL 2.0
 URL:            https://multimc.org
-BuildArch:      x86_64
+# A script and data files: nothing to build, nothing architecture-specific, no debug info
+BuildArch:      noarch
+%global debug_package %{nil}
 
-Requires:       zenity qt5-qtbase wget xrandr
+Requires:       zenity wget xrandr qt5-qtbase qt5-qtbase-gui qt5-qtsvg
 Provides:       multimc MultiMC multimc5
 
 %description
@@ -39,6 +41,10 @@ install -m 0644 ../ubuntu/multimc/usr/share/man/man1/multimc.1 %{buildroot}/%{_m
 %{_mandir}/man1/multimc.1.gz
 
 %changelog
+* Mon Nov 09 2026 Petr Mrázek <peterix@gmail.com> - 1.7-1
+- The Launcher links Qt SVG and needs Qt GUI: depend on qt5-qtsvg and qt5-qtbase-gui
+- noarch, without a debug package (current rpmbuild refused to build it)
+
 * Sun Oct 03 2021 imperatorstorm <30777770+ImperatorStorm@users.noreply.github.com>
 - added manpage
 
