@@ -1,5 +1,5 @@
 Name:           MultiMC5
-Version:        1.7
+Version:        1.8
 Release:        1%{?dist}
 Summary:        A local install wrapper for MultiMC
 
@@ -41,6 +41,9 @@ install -m 0644 ../ubuntu/multimc/usr/share/man/man1/multimc.1 %{buildroot}/%{_m
 %{_mandir}/man1/multimc.1.gz
 
 %changelog
+* Sun Nov 15 2026 Petr Mrázek <peterix@gmail.com> - 1.8-1
+- First start downloads the new updater's Stable package (MultiMC-linux-*-qt5.tar.gz)
+
 * Mon Nov 09 2026 Petr Mrázek <peterix@gmail.com> - 1.7-1
 - The Launcher links Qt SVG and needs Qt GUI: depend on qt5-qtsvg and qt5-qtbase-gui
 - noarch, without a debug package (current rpmbuild refused to build it)
