@@ -1,11 +1,11 @@
 Package: multimc
-Version: 1.8-1
+Version: @VERSION@-1
 Architecture: all
 Maintainer: Petr Mrázek <peterix@gmail.com>
 Section: games
 Priority: optional
-Installed-Size: 75
-Depends: zenity, desktop-file-utils, wget, libqt5core5a, libqt5gui5, libqt5widgets5, libqt5network5, libqt5xml5, libqt5svg5, libqt5dbus5
+Installed-Size: @INSTALLED_SIZE@
+Depends: zenity, desktop-file-utils, hicolor-icon-theme, wget, libqt5core5a, libqt5gui5, libqt5widgets5, libqt5network5, libqt5xml5, libqt5svg5, libqt5dbus5
 Recommends: default-jre
 Homepage: http://multimc.org
 Description: A local install wrapper for MultiMC

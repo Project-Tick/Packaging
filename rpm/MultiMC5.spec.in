@@ -1,46 +1,49 @@
 Name:           MultiMC5
-Version:        1.8
-Release:        1%{?dist}
+Version:        @VERSION@
+# one package for every rpm distribution: no distribution tag in its name
+Release:        1
 Summary:        A local install wrapper for MultiMC
 
 License:        ASL 2.0
 URL:            https://multimc.org
+Source0:        https://files.multimc.org/downloads/multimc-wrapper-%{version}.tar.gz
 # A script and data files: nothing to build, nothing architecture-specific, no debug info
 BuildArch:      noarch
 %global debug_package %{nil}
 
-Requires:       zenity wget xrandr qt5-qtbase qt5-qtbase-gui qt5-qtsvg
+BuildRequires:  make
+Requires:       zenity wget xrandr hicolor-icon-theme qt5-qtbase qt5-qtbase-gui qt5-qtsvg
 Provides:       multimc MultiMC multimc5
 
 %description
 A local install wrapper for MultiMC
 
 %prep
-
+%autosetup -n multimc-wrapper-%{version}
 
 %build
 
 %install
-mkdir -p %{buildroot}/opt/multimc
-install -m 0644 ../ubuntu/multimc/opt/multimc/icon.svg %{buildroot}/opt/multimc/icon.svg
-install -m 0755 ../ubuntu/multimc/opt/multimc/run.sh %{buildroot}/opt/multimc/run.sh
-mkdir -p %{buildroot}/%{_datadir}/applications
-install -m 0644 ../ubuntu/multimc/usr/share/applications/multimc.desktop %{buildroot}/%{_datadir}/applications/multimc.desktop
-mkdir -p %{buildroot}/%{_datadir}/metainfo
-install -m 0644 ../ubuntu/multimc/usr/share/metainfo/multimc.metainfo.xml %{buildroot}/%{_datadir}/metainfo/multimc.metainfo.xml
-mkdir -p %{buildroot}/%{_mandir}/man1
-install -m 0644 ../ubuntu/multimc/usr/share/man/man1/multimc.1 %{buildroot}/%{_mandir}/man1/multimc.1
+# what goes where is the Makefile's
+make install DESTDIR=%{buildroot}
 
 %files
 %dir /opt/multimc
 /opt/multimc/icon.svg
 /opt/multimc/run.sh
-%{_datadir}/applications/multimc.desktop
-%{_datadir}/metainfo/multimc.metainfo.xml
-%dir /usr/share/man/man1
-%{_mandir}/man1/multimc.1.gz
+%{_bindir}/multimc
+%{_datadir}/applications/org.multimc.MultiMC.desktop
+%{_datadir}/icons/hicolor/scalable/apps/org.multimc.MultiMC.svg
+%{_datadir}/metainfo/org.multimc.MultiMC.metainfo.xml
+%{_mandir}/man1/multimc.1*
 
 %changelog
+* Sun Nov 15 2026 Petr Mrázek <peterix@gmail.com> - 1.9-1
+- Desktop file and metainfo named org.multimc.MultiMC, as the Launcher's Wayland app id, with
+  StartupWMClass=MultiMC for X11, and the icon in the hicolor theme: the window gets its icon
+- Built from the wrapper's source tarball with its Makefile, like the deb and Arch packages
+- /usr/bin/multimc runs the wrapper
+
 * Sun Nov 15 2026 Petr Mrázek <peterix@gmail.com> - 1.8-1
 - First start downloads the new updater's Stable package (MultiMC-linux-*-qt5.tar.gz)
 

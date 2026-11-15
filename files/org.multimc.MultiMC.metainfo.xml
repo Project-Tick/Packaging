@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-    <id>multimc</id>
-    <launchable type="desktop-id">multimc.desktop</launchable>
+    <id>org.multimc.MultiMC</id>
+    <launchable type="desktop-id">org.multimc.MultiMC.desktop</launchable>
+    <provides>
+        <id>multimc</id>
+    </provides>
     <name>MultiMC</name>
     <summary>Manage Minecraft instances with ease</summary>
     <description>

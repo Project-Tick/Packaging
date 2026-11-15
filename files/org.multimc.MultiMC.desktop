@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=MultiMC 5
+Exec=/opt/multimc/run.sh
+Icon=org.multimc.MultiMC
+StartupWMClass=MultiMC
+StartupNotify=true
+Terminal=false
+Categories=Game;
+Keywords=game;Minecraft;
