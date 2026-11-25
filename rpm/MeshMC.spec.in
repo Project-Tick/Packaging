@@ -1,0 +1,39 @@
+Name:           MeshMC
+Version:        @VERSION@
+# one package for every rpm distribution: no distribution tag in its name
+Release:        1
+Summary:        A local install wrapper for MeshMC
+
+License:        Apache-2.0 AND MS-PL
+URL:            https://projecttick.org
+Source0:        https://github.com/Project-Tick/Packaging/releases/download/%{version}/meshmc-wrapper-%{version}.tar.gz
+# A script and data files: nothing to build, nothing architecture-specific, no debug info
+BuildArch:      noarch
+%global debug_package %{nil}
+
+BuildRequires:  make
+Requires:       zenity wget xrandr hicolor-icon-theme qt5-qtbase qt5-qtbase-gui qt5-qtsvg
+
+%description
+A local install wrapper for MeshMC
+
+%prep
+%autosetup -n meshmc-wrapper-%{version}
+
+%build
+
+%install
+# what goes where is the Makefile's
+make install DESTDIR=%{buildroot}
+
+%files
+%{_bindir}/meshmc
+%{_datadir}/applications/org.projecttick.MeshMC.desktop
+%{_datadir}/icons/hicolor/scalable/apps/org.projecttick.MeshMC.svg
+%{_datadir}/icons/hicolor/256x256/apps/org.projecttick.MeshMC.png
+%{_datadir}/metainfo/org.projecttick.MeshMC.metainfo.xml
+%{_mandir}/man1/meshmc.1*
+
+%changelog
+* Sun Nov 15 2026 Mehmet Samet Duman <yongdohyun@projecttick.org> - 2.0-1
+- Initial Packaging

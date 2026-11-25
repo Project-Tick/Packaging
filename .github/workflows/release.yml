@@ -1,0 +1,62 @@
+name: Build and release wrapper packages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: wrapper-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Build wrapper packages
+        run: python3 -u build.py
+
+      - name: Publish out/ as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          version="$(cat out/VERSION)"
+          [[ "$version" =~ ^[0-9]+(\.[0-9]+)+$ ]]
+
+          # GitHub release assets are flat. Preserve the AUR directory and its dotfile.
+          tar -C out -czf out/aur.tar.gz aur
+          assets=()
+          for file in out/*; do
+            if [[ -f "$file" ]]; then
+              assets+=("$file")
+            fi
+          done
+
+          if release="$(gh release view "$version" --json isDraft,targetCommitish 2>&1)"; then
+            if jq -e '.isDraft == false' <<< "$release" >/dev/null; then
+              echo "Wrapper $version is already published."
+              exit 0
+            fi
+            if ! jq -e --arg commit "$GITHUB_SHA" '.targetCommitish == $commit' <<< "$release" >/dev/null; then
+              echo "::error::Wrapper $version already has a draft for a different commit."
+              exit 1
+            fi
+          elif [[ "$release" == 'release not found' ]]; then
+            gh release create "$version" --draft --target "$GITHUB_SHA" \
+              --title "MeshMC Wrapper $version" --generate-notes
+          else
+            echo "$release" >&2
+            exit 1
+          fi
+
+          gh release upload "$version" "${assets[@]}" --clobber
+          gh release edit "$version" --draft=false

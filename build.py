@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Build every MultiMC wrapper package from this repository: the one source of truth.
+"""Build every MeshMC wrapper package from this repository: the one source of truth.
 
     ./build.py [--out DIR] [--engine docker|podman] [--only deb,rpm,arch]
 
 Into DIR (default out/):
-  multimc-wrapper-<version>.tar.gz   the source: the files `git ls-files` lists, reproducibly
+  meshmc-wrapper-<version>.tar.gz   the source: the files `git ls-files` lists, reproducibly
                                      packed (fixed order, owner and times); the rpm and Arch
                                      packages build from it, so it is uploaded with them
-  multimc_<version>-1.deb            built with dpkg-deb in a Debian container
-  MultiMC5-<version>-1.*.noarch.rpm  built with rpmbuild in a Fedora container
-  aur/PKGBUILD, aur/.SRCINFO         for the AUR's multimc-bin; the Arch container also builds
+  meshmc_<version>-1.deb            built with dpkg-deb in a Debian container
+  MeshMC-<version>-1.*.noarch.rpm  built with rpmbuild in a Fedora container
+  aur/PKGBUILD, aur/.SRCINFO         for the AUR's meshmc; the Arch container also builds
                                      the package from them and runs namcap, as a check
-  multimc-bin-<version>-1-any.pkg.tar.zst   that check's package (not for publishing)
+  meshmc-<version>-1-any.pkg.tar.zst   that check's package (not for publishing)
 
 The version is VERSION's. What gets installed where is the Makefile's: the deb is its
 `make install`, and the rpm spec and PKGBUILD call it. deb/, rpm/ and arch/ hold each format's
@@ -42,14 +42,14 @@ def run(*args, **kwargs):
 
 
 def source_tarball(version, out):
-    """The tracked files (and new ones not ignored), as multimc-wrapper-<version>/..., with
+    """The tracked files (and new ones not ignored), as meshmc-wrapper-<version>/..., with
     the newest commit's time on every entry, so the same tree gives the same bytes."""
     listed = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", "-z"],
                             cwd=HERE, check=True, capture_output=True).stdout.decode()
     files = sorted(f for f in listed.split("\0") if f and (HERE / f).is_file())
     mtime = int(subprocess.run(["git", "log", "-1", "--format=%ct"], cwd=HERE, check=True,
                                capture_output=True, text=True).stdout.strip() or 0)
-    prefix = "multimc-wrapper-%s/" % version
+    prefix = "meshmc-wrapper-%s/" % version
     raw = io.BytesIO()
     with tarfile.open(fileobj=raw, mode="w", format=tarfile.PAX_FORMAT) as tar:
         for name in files:
@@ -62,7 +62,7 @@ def source_tarball(version, out):
             info.uname = info.gname = "root"
             with open(path, "rb") as f:
                 tar.addfile(info, f)
-    target = out / ("multimc-wrapper-%s.tar.gz" % version)
+    target = out / ("meshmc-wrapper-%s.tar.gz" % version)
     with open(target, "wb") as f, gzip.GzipFile(filename="", mode="wb", fileobj=f, mtime=0) as gz:
         gz.write(raw.getvalue())
     return target
@@ -98,9 +98,9 @@ def build_deb(engine, version, out):
 
 
 def build_rpm(engine, version, out):
-    (out / "MultiMC5.spec").write_text(render(HERE / "rpm" / "MultiMC5.spec.in", {"VERSION": version}))
+    (out / "MeshMC.spec").write_text(render(HERE / "rpm" / "MeshMC.spec.in", {"VERSION": version}))
     in_container(engine, IMAGES["rpm"], out, HERE / "rpm" / "build.sh")
-    (out / "MultiMC5.spec").unlink()
+    (out / "MeshMC.spec").unlink()
 
 
 def build_arch(engine, version, out, tarball):

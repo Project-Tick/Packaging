@@ -1,12 +1,11 @@
-Package: multimc
+Package: meshmc
 Version: @VERSION@-1
 Architecture: all
-Maintainer: Petr Mrázek <peterix@gmail.com>
+Maintainer: Mehmet Samet Duman <yongdohyun@projecttick.org>
 Section: games
 Priority: optional
 Installed-Size: @INSTALLED_SIZE@
 Depends: zenity, desktop-file-utils, hicolor-icon-theme, wget, libqt5core5a, libqt5gui5, libqt5widgets5, libqt5network5, libqt5xml5, libqt5svg5, libqt5dbus5
 Recommends: default-jre
-Homepage: http://multimc.org
-Description: A local install wrapper for MultiMC
-
+Homepage: http://projecttick.org
+Description: A local install wrapper for MeshMC

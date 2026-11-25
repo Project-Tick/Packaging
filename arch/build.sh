@@ -7,7 +7,7 @@ version=$(cat /work/VERSION)
 pacman -Syu --noconfirm --needed --quiet base-devel namcap > /tmp/pacman.log 2>&1 || { cat /tmp/pacman.log; exit 1; }
 useradd -m builder
 mkdir /build
-cp /work/aur/PKGBUILD "/work/multimc-wrapper-${version}.tar.gz" /build/
+cp /work/aur/PKGBUILD "/work/meshmc-wrapper-${version}.tar.gz" /build/
 chown -R builder /build
 cd /build
 su builder -c "makepkg --printsrcinfo" > /work/aur/.SRCINFO
